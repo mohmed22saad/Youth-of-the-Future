@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03-Pure JavaScript vs React Virtual DOM | الفرق بين جافاسكربت و DOM الافتراضي في React</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .main-title {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-right: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background: #764ba2;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #34495e;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-family: 'Amiri', serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">03-Pure JavaScript vs React Virtual DOM | الفرق بين جافاسكربت و DOM الافتراضي في React</h1>
+        </header>
+        <main class="content">
+            <section class="section">
+                <h2 class="section-title">مقدمة</h2>
+                <div class="section-content">
+                    <p>السلام عليكم، اللهم صلي وسلم وإذن وبرك على سيدنا محمد وعلى آله وأصحابه المعينين طيب، بإذن الله، النهاردة هنكمل رحلة معرفة ال-DOM واستكشاف ايه هو اللي بيحصل في البروزر وانا بستخدم ال-Vanilla JavaScript وانا بستخدم ال-React.</p>
+                    <p>احنا كنا تناقشنا المرة اللي فاتت عن المراحل اللي بيتم من خلالها عمل رندر للوبسيط. رندر يعني ايه؟ يعني ان هو يظهر لك ببساطة شديدة الوبسايت بتاعك في البروزر!</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">شرح العملية</h2>
+                <div class="section-content">
+                    <p>المراحل التي تحدث عند بناء الموقع تبدأ بتحليل ملفات HTML و CSS ثم تحويلها إلى شجرة DOM وCSSOM. يتم دمجها في النهاية ضمن Render Tree من أجل تحديد التصميم النهائي قبل رسم الشاشة.</p>
+                    <p>أما عند استخدام Vanilla JavaScript، يتم التعديل على ال-DOM مباشرة، الأمر الذي يتطلب إعادة بناء كاملة لكل مرة يحدث فيها تعديل، مما يؤدي إلى بطء في الأداء.</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">مقارنة مع React Virtual DOM</h2>
+                <div class="section-content">
+                    <p>React يقوم بإنشاء Virtual DOM وهي نسخة خفيفة من DOM الحقيقية، تُخزن في الذاكرة بحيث يتم تنفيذ التعديلات عليها أولاً قبل عكسها على الـReal DOM. ذلك يقلل من عمليات إعادة بناء الأشجار قدر الإمكان.</p>
+                    <p>باستخدام الخوارزمية <span class="highlight">Diff Algorithm</span>، يقوم React بمقارنة النسخة القديمة من Virtual DOM بالنسخة الجديدة ويحدث فقط الاختلافات بشكل مباشر.</p>
+                </div>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>تم الانتهاء من شرح الفرق والأداء بين Pure JavaScript و React Virtual DOM. تابع معنا سلسلة الدروس لمزيد من الفهم والتفصيل!</p>
+        </footer>
+    </div>
+</body>
+</html>
+
