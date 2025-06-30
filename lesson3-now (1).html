@@ -1,10 +1,11 @@
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>04-What is React Fiber: Why We Need It & Disadvantages Without Fiber | شرح React Fiber</title>
+    <title>03-Pure JavaScript vs React Virtual DOM | الفرق بين جافاسكربت و DOM الافتراضي في React</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -27,7 +28,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -42,12 +43,7 @@
             font-family: 'Amiri', serif;
             font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .content {
@@ -56,90 +52,182 @@
 
         .section {
             margin-bottom: 40px;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             background: #f8f9fa;
             border-right: 5px solid #667eea;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         .section-title {
             font-family: 'Amiri', serif;
             font-size: 2rem;
-            color: #2c3e50;
             margin-bottom: 15px;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: 0;
-            width: 50px;
-            height: 2px;
-            background: #764ba2;
         }
 
         .section-content {
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: #34495e;
+            font-size: 1.2rem;
         }
 
-        .highlight {
-            background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2px 8px;
+        .quiz-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .quiz-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .quiz-options li {
+            margin-bottom: 10px;
+        }
+
+        .quiz-options button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
             border-radius: 5px;
-            font-weight: 600;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #f9f9f9;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-options button:hover {
+            background-color: #e6e6e6;
+        }
+
+        .quiz-options button.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .quiz-options button.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
         }
 
         .footer {
             background: #2c3e50;
             color: white;
-            padding: 30px;
             text-align: center;
-            font-family: 'Amiri', serif;
+            padding: 20px;
+            font-size: 1rem;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="main-title">04-What is React Fiber: Why We Need It & Disadvantages Without Fiber</h1>
+            <h1 class="main-title">03-Pure JavaScript vs React Virtual DOM | الفرق بين جافاسكربت و DOM الافتراضي في React</h1>
         </header>
         <main class="content">
             <section class="section">
                 <h2 class="section-title">مقدمة</h2>
                 <div class="section-content">
-                    <p>React Fiber هو إعادة بناء رئيسي لهدف React، تم تصميمه لتقديم تحسينات كبيرة في أداء التطبيقات وتسهيل تجربة التطوير. يساعد Fiber على إدارة العمليات طويلة المدى والقضاء على القيود المتعلقة بالمكونات الكثيفة بالبيانات.</p>
+                    <p>السلام عليكم، اليوم نكمل رحلتنا لفهم DOM (Document Object Model) واكتشاف الفارق بين استخدام Vanilla JavaScript و React Virtual DOM.</p>
                 </div>
             </section>
-
             <section class="section">
-                <h2 class="section-title">لماذا نحتاج إلى React Fiber؟</h2>
+                <h2 class="section-title">شرح العملية</h2>
                 <div class="section-content">
-                    <p>المكتبة السابِقة لـ React واجهت محدودية في أداء العمليات التي تتطلب تحديثات متكررة أو حسابات مكثفة. <span class="highlight">Fiber</span> تم ابتكاره لتوفير نهج أكثر كفاءة من خلال إمكانية قسمة عمليات التحميل إلى أجزاء صغيرة تسمح بتحديثات سلسة وبدون انقطاع.</p>
+                    <p>عند بناء الموقع، تحدث الخطوات التالية:</p>
+                    <ul>
+                        <li>تحليل ملفات HTML وإنشاء DOM Tree.</li>
+                        <li>تحليل ملفات CSS وإنشاء CSSOM Tree.</li>
+                        <li>دمج DOM وCSSOM لإنشاء Render Tree.</li>
+                        <li>تنفيذ JavaScript للإضافات الديناميكية على DOM.</li>
+                        <li>رسم النتائج على الشاشة المعروضة للمستخدم.</li>
+                    </ul>
                 </div>
             </section>
-
             <section class="section">
-                <h2 class="section-title">عواقب عدم استخدام Fiber</h2>
+                <h2 class="section-title">مقارنة بين DOM الحقيقي و DOM الافتراضي</h2>
                 <div class="section-content">
-                    <p>عدم استخدام Fiber يعني أن التطبيقات الكبيرة ذات المكونات الديناميكية ستعمل بأداء أقل، خصوصًا مع التدفق الكبير من البيانات أو تعقيد الأنشطة. قد تكون النتيجة تدهور في أداء واجهة المستخدم والقدرة على تنفيذ المهام الثقيلة بكفاءة.</p>
+                    <p>DOM الحقيقي يتم تعديله مباشرة ويؤدي إلى إعادة بناء كامل للشجرة، مما يبطئ الأداء. في المقابل، Virtual DOM هو نسخة مخففة يتم تعديلها أولاً ثم عكس التعديلات مباشرة على DOM الحقيقي فقط في الأماكن اللازمة.</p>
+                </div>
+            </section>
+            <section class="quiz-section">
+                <h2 class="quiz-title">اختبر نفسك</h2>
+                <div class="quiz-question">
+                    <h3>1. ما هي أول مرحلة تحدث عند بناء الموقع؟</h3>
+                    <ul class="quiz-options">
+                        <li><button data-correct="true">تحليل HTML وبناء DOM Tree</button></li>
+                        <li><button>تنفيذ JavaScript</button></li>
+                        <li><button>دمج CSS و HTML</button></li>
+                    </ul>
+                </div>
+                <div class="quiz-question">
+                    <h3>2. ما الفرق بين DOM الحقيقي و DOM الافتراضي؟</h3>
+                    <ul class="quiz-options">
+                        <li><button data-correct="true">DOM الافتراضي نسخة خفيفة تُعدّل في الذاكرة قبل تحديث DOM الحقيقي</button></li>
+                        <li><button>DOM الحقيقي أسرع دائمًا</button></li>
+                        <li><button>DOM الافتراضي موجود في المتصفح فقط</button></li>
+                    </ul>
+                </div>
+                <div class="quiz-question">
+                    <h3>3. ما دور خوارزمية Diff Algorithm في React؟</h3>
+                    <ul class="quiz-options">
+                        <li><button>إدارة ملفات CSS</button></li>
+                        <li><button data-correct="true">تحديد التغييرات بين DOM القديم والجديد</button></li>
+                        <li><button>بحث العناصر المشابهة</button></li>
+                    </ul>
+                </div>
+                <div class="quiz-question">
+                    <h3>4. لماذا يُفضل استخدام React Virtual DOM؟</h3>
+                    <ul class="quiz-options">
+                        <li><button data-correct="true">لأنه يقلل من التعديلات المؤثرة على DOM الحقيقي ويحسن الأداء</button></li>
+                        <li><button>لإضافة ميزات ديناميكية للـCSS</button></li>
+                        <li><button>لتحميل المواقع بشكل أسرع دائمًا</button></li>
+                    </ul>
+                </div>
+                <div class="quiz-question">
+                    <h3>5. ما هي عيوب تعديل DOM الحقيقي باستخدام Vanilla JavaScript؟</h3>
+                    <ul class="quiz-options">
+                        <li><button>DOM الحقيقي لا يدعم التعديلات الديناميكية</button></li>
+                        <li><button data-correct="true">يؤدي إلى إعادة بناء كاملة للشجرة مما يؤدي لبطء الأداء</button></li>
+                        <li><button>لا يمكن استخدامه مع CSSOM</button></li>
+                    </ul>
                 </div>
             </section>
         </main>
         <footer class="footer">
-            <p>تم الانتهاء من شرح React Fiber، تابعنا لمزيد من الدروس حول تحسين الأداء بتقنيات البرمجة الحديثة!</p>
+            <p>تم شرح الفرق بين JavaScript و React Virtual DOM. تابع سلسلة الدروس للإستفادة أكثر!</p>
         </footer>
     </div>
+    <script>
+        document.querySelectorAll(".quiz-options button").forEach(button => {
+            button.addEventListener("click", function () {
+                if (this.dataset.correct === "true") {
+                    this.classList.add("correct");
+                } else {
+                    this.classList.add("incorrect");
+                }
+                this.parentElement.querySelectorAll("button").forEach(btn => btn.disabled = true);
+            });
+        });
+    </script>
 </body>
+
 </html>
 
